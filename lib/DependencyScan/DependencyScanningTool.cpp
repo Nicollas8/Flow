@@ -296,6 +296,17 @@ DependencyScanningTool::DependencyScanningTool()
 llvm::ErrorOr<swiftscan_dependency_graph_t>
 DependencyScanningTool::getDependencies(ArrayRef<const char *> Command,
                                         StringRef WorkingDirectory) {
+  // FIXME: Queries issued against a single tool must currently be serialized
+  // in their entirety, not just for the duration of their setup.
+  // `ModuleDependencyScanner`'s constructor re-creates the Clang dependency
+  // scanning service owned by `ScanningService` in order to install a VFS
+  // factory that closes over query-specific state (see
+  // `SwiftDependencyScanningService::setClangScanningFSFactory`), destroying it
+  // out from under any query already in flight. Serializing here is a stopgap;
+  // the fix is to stop replacing that service, which additionally requires
+  // giving the per-query VFS factory a home that is not shared across queries.
+  llvm::sys::SmartScopedLock<true> Lock(DependencyScanningToolStateLock);
+
   // Diagnostics which may get collected during scanning instance
   // initialization
   std::vector<DepScanInMemoryDiagnosticCollector::ScannerDiagnosticInfo>
@@ -326,6 +337,9 @@ DependencyScanningTool::getDependencies(ArrayRef<const char *> Command,
 llvm::ErrorOr<swiftscan_import_set_t>
 DependencyScanningTool::getImports(ArrayRef<const char *> Command,
                                    StringRef WorkingDirectory) {
+  // See the comment on the lock in `getDependencies`.
+  llvm::sys::SmartScopedLock<true> Lock(DependencyScanningToolStateLock);
+
   // Diagnostics which may get collected during scanning instance
   // initialization
   std::vector<DepScanInMemoryDiagnosticCollector::ScannerDiagnosticInfo>
