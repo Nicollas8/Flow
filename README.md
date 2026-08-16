@@ -3,11 +3,11 @@
   <img src="https://www.swift.org/assets/images/swift.svg" alt="Swift logo" height="70">
 </picture>
 
-# Swift Programming Language
+# Flow Programming Language
 
-## Welcome to Swift
+## Welcome to Flow
 
-Swift is a high-performance system programming language.  It has a clean
+Flow is a high-performance system programming language.  It has a clean
 and modern syntax, offers seamless access to existing C and Objective-C code
 and frameworks, and is memory-safe by default.
 
@@ -17,7 +17,6 @@ features like flow control, data structures, and functions, with high-level
 constructs like objects, protocols, closures, and generics. Swift embraces
 modules, eliminating the need for headers and the code duplication they entail.
 
-To learn more about using the language, visit [swift.org](https://swift.org/documentation/).
 To learn more about the compiler's internal design, see the
 [documentation index](/docs/README.md).
 
